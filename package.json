@@ -1,0 +1,60 @@
+{
+  "name": "arcgis-migrate",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Scan an ArcGIS Maps SDK for JavaScript app for widget-era code before the 6.0 component migration.",
+  "type": "module",
+  "bin": {
+    "arcgis-migrate": "dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "docs",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsx src/cli.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -p tsconfig.json",
+    "scan:fixture": "tsx src/cli.ts scan tests/fixtures --format markdown",
+    "scan:fixture:json": "tsx src/cli.ts scan tests/fixtures --format json",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "arcgis",
+    "esri",
+    "migration",
+    "codemod",
+    "javascript",
+    "typescript",
+    "maps",
+    "gis"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "dependencies": {
+    "commander": "^15.0.0",
+    "fast-glob": "^3.3.3",
+    "picocolors": "^1.1.1",
+    "ts-morph": "^28.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.5"
+  }
+}
