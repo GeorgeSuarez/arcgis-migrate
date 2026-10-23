@@ -3,14 +3,14 @@ import type { RuleDefinition } from "../types.js";
 export const RULES = {
   mapViewImport: {
     id: "mapview-import",
-    title: "MapView / SceneView import",
-    severity: "error",
+    title: "Imperative view import",
+    severity: "warning",
     effortHours: 0.5,
   },
   mapViewUsage: {
     id: "mapview-usage",
     title: "Imperative MapView / SceneView",
-    severity: "error",
+    severity: "warning",
     effortHours: 1.5,
   },
   containerProperty: {
@@ -58,7 +58,7 @@ export const RULES = {
   uiAdd: {
     id: "ui-add",
     title: "view.ui add/remove",
-    severity: "error",
+    severity: "warning",
     effortHours: 0.5,
   },
   viewWhen: {

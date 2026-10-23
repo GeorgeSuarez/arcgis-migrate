@@ -50,6 +50,7 @@ function scanNewExpressions(
     const name = lastIdentifier(node.getExpression().getText());
 
     if (name === "MapView" || name === "SceneView") {
+      facts.hasRuntimeView = true;
       const variableName = getDeclaredVariableName(node);
       if (variableName) facts.viewNames.add(variableName);
 
@@ -57,8 +58,8 @@ function scanNewExpressions(
         makeFinding(
           node,
           RULES.mapViewUsage,
-          `new ${name}() creates an imperative view that the component API replaces.`,
-          `Use <${name === "MapView" ? "arcgis-map" : "arcgis-scene"}> and await viewOnReady().`,
+          `new ${name}() creates an imperative view. It is not removed at 6.0, but components are the recommended path.`,
+          `Use <${name === "MapView" ? "arcgis-map" : "arcgis-scene"}> for new code; keep MapView only for custom view workflows.`,
         ),
       );
 
@@ -141,7 +142,7 @@ function scanCalls(
         makeFinding(
           call,
           RULES.uiAdd,
-          "view.ui add/remove/move/empty is not available with map components.",
+          "view.ui add/remove/move/empty is not available on map components; it remains valid only with MapView.",
           position
             ? `Use a slotted component: <arcgis-... slot="${position}">.`
             : "Use the slot attribute on a component (top-left, top-right, bottom-left, bottom-right).",
@@ -156,7 +157,7 @@ function scanCalls(
           makeFinding(
             call,
             RULES.viewWhen,
-            "view.when() is the imperative view lifecycle; components expose viewOnReady() and arcgisViewReadyChange.",
+            "view.when() is the imperative view lifecycle; if the view comes from <arcgis-map>, prefer viewOnReady() or arcgisViewReadyChange.",
             "Replace with await viewElement.viewOnReady() or listen for arcgisViewReadyChange.",
           ),
         );
@@ -274,8 +275,7 @@ function isViewReceiver(receiver: string, facts: ImportFacts): boolean {
   const name = lastIdentifier(receiver);
   return (
     facts.viewNames.has(name) ||
-    /^(view|mapView|sceneView|viewElement)$/.test(name) ||
-    name.endsWith("View")
+    (facts.hasRuntimeView && /^(view|mapView|sceneView|viewElement)$/.test(name))
   );
 }
 

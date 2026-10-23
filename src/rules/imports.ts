@@ -7,6 +7,7 @@ export interface ImportFacts {
   viewNames: Set<string>;
   widgetNames: Set<string>;
   viewModelNames: Set<string>;
+  hasRuntimeView: boolean;
 }
 
 const WIDGET_COMPONENT_OVERRIDES: Record<string, string> = {
@@ -53,22 +54,26 @@ export function scanImports(
     viewNames: new Set(),
     widgetNames: new Set(),
     viewModelNames: new Set(),
+    hasRuntimeView: false,
   };
 
   for (const declaration of sourceFile.getImportDeclarations()) {
+    if (isTypeOnlyImport(declaration)) continue;
+
     const specifier = declaration.getModuleSpecifierValue();
     const localName = getImportLocalName(declaration);
 
     const viewMatch = /^@arcgis\/core\/views\/(MapView|SceneView)(?:\.js)?$/.exec(specifier);
     if (viewMatch) {
       const viewType = viewMatch[1] as "MapView" | "SceneView";
+      facts.hasRuntimeView = true;
       if (localName) facts.viewNames.add(localName);
       add(
         makeFinding(
           declaration,
           RULES.mapViewImport,
-          `${viewType} is imported from the deprecated imperative view module.`,
-          `Use <${viewType === "MapView" ? "arcgis-map" : "arcgis-scene"}> and await viewOnReady() instead.`,
+          `${viewType} is the imperative view API. It is not removed at 6.0, but components are the recommended path.`,
+          `Use <${viewType === "MapView" ? "arcgis-map" : "arcgis-scene"}> for new code; keep MapView only for custom view workflows.`,
         ),
       );
       continue;
@@ -144,6 +149,18 @@ function getImportLocalName(declaration: ImportDeclaration): string | undefined 
   }
 
   return undefined;
+}
+
+function isTypeOnlyImport(declaration: ImportDeclaration): boolean {
+  if (declaration.isTypeOnly()) return true;
+
+  const namedImports = declaration.getNamedImports();
+  return (
+    !declaration.getDefaultImport() &&
+    !declaration.getNamespaceImport() &&
+    namedImports.length > 0 &&
+    namedImports.every((namedImport) => namedImport.isTypeOnly())
+  );
 }
 
 function viewModelNameFromSpecifier(specifier: string): string | undefined {

@@ -7,7 +7,7 @@ Find widget-era code in an ArcGIS Maps SDK for JavaScript app before the 6.0 com
 ## Why
 
 - All ArcGIS Maps SDK widgets are deprecated as of **5.0**.
-- **6.0** is planned for **Q1 2027** and is the removal point for widgets, AMD `require()`, and the `__esri` TypeScript namespace.
+- **6.0** is planned for **Q1 2027** and is the removal point for widgets and the `__esri` TypeScript namespace; AMD `require()` is deprecated and may also be removed.
 - The migration is not a rename. `MapView` becomes `<arcgis-map>`, `view.ui.add()` becomes slots, view events become `arcgis*` events, theme CSS becomes Calcite modes, and many view models have no public replacement yet.
 - Teams need a quick inventory before they can plan the work. This CLI produces that inventory from the AST, not from a fragile text search.
 
@@ -49,8 +49,8 @@ See [`docs/example-report.md`](./docs/example-report.md) for a full report.
 
 | Rule | Severity | Finds | Migration hint |
 | --- | --- | --- | --- |
-| `mapview-import` | error | `@arcgis/core/views/MapView.js` / `SceneView.js` imports | Use `<arcgis-map>` / `<arcgis-scene>` |
-| `mapview-usage` | error | `new MapView()` / `new SceneView()` | Use the map/scene component and `viewOnReady()` |
+| `mapview-import` | warning | `@arcgis/core/views/MapView.js` / `SceneView.js` imports | Prefer `<arcgis-map>` / `<arcgis-scene>` for new code |
+| `mapview-usage` | warning | `new MapView()` / `new SceneView()` | Prefer the map/scene component; keep MapView for custom view workflows |
 | `container-property` | warning | `container` in a view constructor | Remove it; the component element is the container |
 | `widget-import` | error | `@arcgis/core/widgets/*` imports | Use the matching `arcgis-*` component |
 | `widget-usage` | error | `new Search()`, `new Legend()`, etc. | Replace with the component |
@@ -58,7 +58,7 @@ See [`docs/example-report.md`](./docs/example-report.md) for a full report.
 | `widget-viewmodel-property` | warning | `viewModel` in a widget constructor | Check the view-model roadmap |
 | `viewmodel-import` | warning | `*ViewModel.js` imports | Many view models have no public replacement yet |
 | `viewmodel-usage` | warning | `new *ViewModel()` | Check the view-model roadmap |
-| `ui-add` | error | `view.ui.add/remove/move/empty` | Use slotted components |
+| `ui-add` | warning | `view.ui.add/remove/move/empty` | Use slotted components |
 | `view-when` | warning | `view.when()` | `viewOnReady()` or `arcgisViewReadyChange` |
 | `view-event-name` | warning | Common view events, e.g. `"click"` | `arcgisViewClick` and friends |
 | `position-attribute` | warning | JSX `position` attribute | Use `slot` |
@@ -76,7 +76,7 @@ See [`docs/example-report.md`](./docs/example-report.md) for a full report.
 
 Scanned 4 files in 0.02s.
 
-Found 27 findings in 3 files: 12 errors, 15 warnings, 0 info.
+Found 27 findings in 3 files: 5 errors, 22 warnings, 0 info.
 
 Estimated effort: ~17.5h (rough).
 
@@ -84,19 +84,21 @@ Estimated effort: ~17.5h (rough).
 
 | Rule | Severity | Count | Est. hours |
 | --- | --- | ---: | ---: |
-| `mapview-usage` | error | 3 | 4.5 |
-| `view-when` | warning | 3 | 1.5 |
 | `container-property` | warning | 3 | 0.75 |
-| `ui-add` | error | 2 | 1 |
+| `mapview-usage` | warning | 3 | 4.5 |
+| `view-when` | warning | 3 | 1.5 |
+| `mapview-import` | warning | 2 | 1 |
+| `ui-add` | warning | 2 | 1 |
 | `widget-usage` | error | 2 | 1.5 |
+| `widget-import` | error | 2 | 0.5 |
 ...
 
 ## Findings by file
 
 ### `src/App.tsx`
 
-- **ERROR** `mapview-usage` — new MapView() creates an imperative view that the component API replaces. (line 9, col 14)
-  - Use <arcgis-map> and await viewOnReady().
+- **WARNING** `mapview-usage` — new MapView() creates an imperative view. It is not removed at 6.0, but components are the recommended path. (line 9, col 14)
+  - Use <arcgis-map> for new code; keep MapView only for custom view workflows.
   - `new MapView({`
 ```
 
@@ -150,6 +152,12 @@ src/policy.ts       --fail-on behavior
 - Default excludes: `node_modules`, `dist`, `build`, `.next`, `coverage`, `.git`.
 - Findings are deduplicated and sorted by file, line, column, and rule.
 - The effort estimate is a rough sum of per-rule hours; use it for triage, not scheduling.
+
+## Validation
+
+- Fixtures cover a widget app, a component app, an AMD app, and a view stored in a non-obvious variable name.
+- Real-world check: a 53-file component-based app that imports `MapView` only as a type and owns the view through `<arcgis-map>` produced a single finding: a legacy theme CSS import.
+- `npm test` covers rule detection, the clean component app, AMD, JSON/Markdown output, and `--fail-on` policy.
 
 ## Limitations
 

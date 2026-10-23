@@ -2,7 +2,7 @@
 
 Scanned **4** files in 0.02s.
 
-Found **27** findings in **3** files: **12** errors, **15** warnings, **0** info.
+Found **27** findings in **3** files: **5** errors, **22** warnings, **0** info.
 
 Estimated effort: **~17.5h** (rough).
 
@@ -11,10 +11,10 @@ Estimated effort: **~17.5h** (rough).
 | Rule | Severity | Count | Est. hours |
 | --- | --- | ---: | ---: |
 | `container-property` | warning | 3 | 0.75 |
-| `mapview-usage` | error | 3 | 4.5 |
+| `mapview-usage` | warning | 3 | 4.5 |
 | `view-when` | warning | 3 | 1.5 |
-| `mapview-import` | error | 2 | 1 |
-| `ui-add` | error | 2 | 1 |
+| `mapview-import` | warning | 2 | 1 |
+| `ui-add` | warning | 2 | 1 |
 | `view-event-name` | warning | 2 | 0.5 |
 | `widget-import` | error | 2 | 0.5 |
 | `widget-usage` | error | 2 | 1.5 |
@@ -31,8 +31,8 @@ Estimated effort: **~17.5h** (rough).
 
 ### `widget-app.tsx`
 
-- **ERROR** `mapview-import` — MapView is imported from the deprecated imperative view module. (line 2, col 1)
-  - Use <arcgis-map> and await viewOnReady() instead.
+- **WARNING** `mapview-import` — MapView is the imperative view API. It is not removed at 6.0, but components are the recommended path. (line 2, col 1)
+  - Use <arcgis-map> for new code; keep MapView only for custom view workflows.
   - `import MapView from "@arcgis/core/views/MapView.js";`
 - **ERROR** `widget-import` — Search is a widget deprecated since version 5.0. (line 3, col 1)
   - Use <arcgis-search> instead.
@@ -46,8 +46,8 @@ Estimated effort: **~17.5h** (rough).
 - **WARNING** `theme-css-import` — Core API theme CSS is not needed for components and is difficult to scope inside shadow DOM. (line 6, col 1)
   - Use Calcite mode classes (calcite-mode-light/calcite-mode-dark) and component CSS variables.
   - `import "@arcgis/core/assets/esri/themes/light/main.css";`
-- **ERROR** `mapview-usage` — new MapView() creates an imperative view that the component API replaces. (line 9, col 14)
-  - Use <arcgis-map> and await viewOnReady().
+- **WARNING** `mapview-usage` — new MapView() creates an imperative view. It is not removed at 6.0, but components are the recommended path. (line 9, col 14)
+  - Use <arcgis-map> for new code; keep MapView only for custom view workflows.
   - `new MapView({`
 - **WARNING** `container-property` — The container property is not used by the map component. (line 10, col 3)
   - Remove container; the component element is the container.
@@ -67,13 +67,13 @@ Estimated effort: **~17.5h** (rough).
 - **ERROR** `widget-usage` — new Legend() instantiates a deprecated widget. (line 22, col 16)
   - Replace it with <arcgis-legend>.
   - `new Legend({ view })`
-- **ERROR** `ui-add` — view.ui add/remove/move/empty is not available with map components. (line 24, col 1)
+- **WARNING** `ui-add` — view.ui add/remove/move/empty is not available on map components; it remains valid only with MapView. (line 24, col 1)
   - Use a slotted component: <arcgis-... slot="top-right">.
   - `view.ui.add(search, "top-right")`
-- **ERROR** `ui-add` — view.ui add/remove/move/empty is not available with map components. (line 25, col 1)
+- **WARNING** `ui-add` — view.ui add/remove/move/empty is not available on map components; it remains valid only with MapView. (line 25, col 1)
   - Use a slotted component: <arcgis-... slot="bottom-left">.
   - `view.ui.add(legend, "bottom-left")`
-- **WARNING** `view-when` — view.when() is the imperative view lifecycle; components expose viewOnReady() and arcgisViewReadyChange. (line 27, col 1)
+- **WARNING** `view-when` — view.when() is the imperative view lifecycle; if the view comes from <arcgis-map>, prefer viewOnReady() or arcgisViewReadyChange. (line 27, col 1)
   - Replace with await viewElement.viewOnReady() or listen for arcgisViewReadyChange.
   - `view.when(() => {`
 - **WARNING** `view-event-name` — View event "click" becomes "arcgisViewClick" on the map component. (line 28, col 3)
@@ -88,16 +88,16 @@ Estimated effort: **~17.5h** (rough).
 
 ### `view-var.ts`
 
-- **ERROR** `mapview-import` — MapView is imported from the deprecated imperative view module. (line 1, col 1)
-  - Use <arcgis-map> and await viewOnReady() instead.
+- **WARNING** `mapview-import` — MapView is the imperative view API. It is not removed at 6.0, but components are the recommended path. (line 1, col 1)
+  - Use <arcgis-map> for new code; keep MapView only for custom view workflows.
   - `import MapView from "@arcgis/core/views/MapView.js";`
-- **ERROR** `mapview-usage` — new MapView() creates an imperative view that the component API replaces. (line 3, col 11)
-  - Use <arcgis-map> and await viewOnReady().
+- **WARNING** `mapview-usage` — new MapView() creates an imperative view. It is not removed at 6.0, but components are the recommended path. (line 3, col 11)
+  - Use <arcgis-map> for new code; keep MapView only for custom view workflows.
   - `new MapView({ container: "viewDiv" })`
 - **WARNING** `container-property` — The container property is not used by the map component. (line 3, col 25)
   - Remove container; the component element is the container.
   - `container: "viewDiv"`
-- **WARNING** `view-when` — view.when() is the imperative view lifecycle; components expose viewOnReady() and arcgisViewReadyChange. (line 5, col 1)
+- **WARNING** `view-when` — view.when() is the imperative view lifecycle; if the view comes from <arcgis-map>, prefer viewOnReady() or arcgisViewReadyChange. (line 5, col 1)
   - Replace with await viewElement.viewOnReady() or listen for arcgisViewReadyChange.
   - `v.when(() => {`
 - **WARNING** `view-event-name` — View event "click" becomes "arcgisViewClick" on the map component. (line 6, col 3)
@@ -109,13 +109,13 @@ Estimated effort: **~17.5h** (rough).
 - **ERROR** `amd-require` — AMD require([...]) is deprecated and is planned for removal in 6.0. (line 1, col 1)
   - Use ESM imports or $arcgis.import() in a module script.
   - `require(["esri/Map", "esri/views/MapView"], function (Map, MapView) {`
-- **ERROR** `mapview-usage` — new MapView() creates an imperative view that the component API replaces. (line 3, col 16)
-  - Use <arcgis-map> and await viewOnReady().
+- **WARNING** `mapview-usage` — new MapView() creates an imperative view. It is not removed at 6.0, but components are the recommended path. (line 3, col 16)
+  - Use <arcgis-map> for new code; keep MapView only for custom view workflows.
   - `new MapView({ container: "viewDiv", map })`
 - **WARNING** `container-property` — The container property is not used by the map component. (line 3, col 30)
   - Remove container; the component element is the container.
   - `container: "viewDiv"`
-- **WARNING** `view-when` — view.when() is the imperative view lifecycle; components expose viewOnReady() and arcgisViewReadyChange. (line 5, col 3)
+- **WARNING** `view-when` — view.when() is the imperative view lifecycle; if the view comes from <arcgis-map>, prefer viewOnReady() or arcgisViewReadyChange. (line 5, col 3)
   - Replace with await viewElement.viewOnReady() or listen for arcgisViewReadyChange.
   - `view.when(function () {`
 
