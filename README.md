@@ -2,8 +2,6 @@
 
 Find widget-era code in an ArcGIS Maps SDK for JavaScript app before the 6.0 component migration.
 
-> Weekend-scaffold status: **scanner only**. It reports what needs to change and gives a rough effort estimate; it does not rewrite your code yet.
-
 ## Why
 
 - All ArcGIS Maps SDK widgets are deprecated as of **5.0**.
@@ -197,14 +195,6 @@ Add a rule:
 2. Implement the check in `src/rules/imports.ts` or `src/rules/usage.ts`.
 3. Add a fixture under `tests/fixtures/` and an assertion in `tests/scanner.test.ts`.
 4. Run `npm test && npm run typecheck`.
-
-## Publishing
-
-The package is marked `"private": true` to prevent an accidental publish.
-
-1. Pick an available name (or use a scope).
-2. Remove `"private": true`.
-3. `npm run build && npm publish --access public`.
 
 ## License
 
