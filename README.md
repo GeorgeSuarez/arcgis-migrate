@@ -47,27 +47,27 @@ See [`docs/example-report.md`](./docs/example-report.md) for a full report.
 
 ## What it finds
 
-| Rule | Severity | Finds | Migration hint |
-| --- | --- | --- | --- |
-| `mapview-import` | warning | `@arcgis/core/views/MapView.js` / `SceneView.js` imports | Prefer `<arcgis-map>` / `<arcgis-scene>` for new code |
-| `mapview-usage` | warning | `new MapView()` / `new SceneView()` | Prefer the map/scene component; keep MapView for custom view workflows |
-| `container-property` | warning | `container` in a view constructor | Remove it; the component element is the container |
-| `widget-import` | error | `@arcgis/core/widgets/*` imports | Use the matching `arcgis-*` component |
-| `widget-usage` | error | `new Search()`, `new Legend()`, etc. | Replace with the component |
-| `widget-position-property` | warning | `position` in a widget constructor | Use `slot="top-right"` |
-| `widget-viewmodel-property` | warning | `viewModel` in a widget constructor | Check the view-model roadmap |
-| `viewmodel-import` | warning | `*ViewModel.js` imports | Many view models have no public replacement yet |
-| `viewmodel-usage` | warning | `new *ViewModel()` | Check the view-model roadmap |
-| `ui-add` | warning | `view.ui.add/remove/move/empty` | Use slotted components |
-| `view-when` | warning | `view.when()` | `viewOnReady()` or `arcgisViewReadyChange` |
-| `view-event-name` | warning | Common view events, e.g. `"click"` | `arcgisViewClick` and friends |
-| `position-attribute` | warning | JSX `position` attribute | Use `slot` |
-| `esri-namespace` | warning | `__esri` type references | Import types from ESM module files |
-| `amd-require` | error | `require(["esri/..."])` | ESM or `$arcgis.import()` |
-| `esri-loader-import` | error | `esri-loader` imports | ESM or `$arcgis.import()` |
-| `esri-loader-usage` | error | `loadModules()` | ESM or `$arcgis.import()` |
-| `theme-css-import` | warning | `@arcgis/core/assets/esri/themes/*` CSS | Calcite light/dark modes |
-| `esri-widget-class` | warning | `esri-widget` CSS class | Calcite components and CSS variables |
+| Rule                        | Severity | Finds                                                    | Migration hint                                                         |
+| --------------------------- | -------- | -------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `mapview-import`            | warning  | `@arcgis/core/views/MapView.js` / `SceneView.js` imports | Prefer `<arcgis-map>` / `<arcgis-scene>` for new code                  |
+| `mapview-usage`             | warning  | `new MapView()` / `new SceneView()`                      | Prefer the map/scene component; keep MapView for custom view workflows |
+| `container-property`        | warning  | `container` in a view constructor                        | Remove it; the component element is the container                      |
+| `widget-import`             | error    | `@arcgis/core/widgets/*` imports                         | Use the matching `arcgis-*` component                                  |
+| `widget-usage`              | error    | `new Search()`, `new Legend()`, etc.                     | Replace with the component                                             |
+| `widget-position-property`  | warning  | `position` in a widget constructor                       | Use `slot="top-right"`                                                 |
+| `widget-viewmodel-property` | warning  | `viewModel` in a widget constructor                      | Check the view-model roadmap                                           |
+| `viewmodel-import`          | warning  | `*ViewModel.js` imports                                  | Many view models have no public replacement yet                        |
+| `viewmodel-usage`           | warning  | `new *ViewModel()`                                       | Check the view-model roadmap                                           |
+| `ui-add`                    | warning  | `view.ui.add/remove/move/empty`                          | Use slotted components                                                 |
+| `view-when`                 | warning  | `view.when()`                                            | `viewOnReady()` or `arcgisViewReadyChange`                             |
+| `view-event-name`           | warning  | Common view events, e.g. `"click"`                       | `arcgisViewClick` and friends                                          |
+| `position-attribute`        | warning  | JSX `position` attribute                                 | Use `slot`                                                             |
+| `esri-namespace`            | warning  | `__esri` type references                                 | Import types from ESM module files                                     |
+| `amd-require`               | error    | `require(["esri/..."])`                                  | ESM or `$arcgis.import()`                                              |
+| `esri-loader-import`        | error    | `esri-loader` imports                                    | ESM or `$arcgis.import()`                                              |
+| `esri-loader-usage`         | error    | `loadModules()`                                          | ESM or `$arcgis.import()`                                              |
+| `theme-css-import`          | warning  | `@arcgis/core/assets/esri/themes/*` CSS                  | Calcite light/dark modes                                               |
+| `esri-widget-class`         | warning  | `esri-widget` CSS class                                  | Calcite components and CSS variables                                   |
 
 ## Example output
 
